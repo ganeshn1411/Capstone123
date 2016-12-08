@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_details"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/myBackground"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="jialiw.cmu.edu.capstoneappv1.ActivityDetails">
+
+
+    <TextView
+        android:text="activityName"
+        android:layout_width="351dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/activity_Name"
+        android:paddingTop="50dp"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:textAlignment="center" />
+
+    <TextView
+        android:text="mainActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/activityPage"
+        android:textSize="25sp"
+        android:textColor="@color/white"
+        android:textAlignment="center" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_marginTop="150dp"
+        android:layout_height="127dp">
+
+        <Button
+            android:text="Start"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:id="@+id/startButton"
+            android:backgroundTint="@color/white"
+            android:textSize="25sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:text="Clear"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:id="@+id/clearButton"
+            android:backgroundTint="@color/white"
+            android:textSize="25sp" />
+
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progressTint="#ffffff"
+            android:id="@+id/progressBar2" />
+
+        <TextView
+            android:text="/"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:textAlignment="center" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
