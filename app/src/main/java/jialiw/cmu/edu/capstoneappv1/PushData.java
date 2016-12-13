@@ -52,16 +52,13 @@ public class PushData extends AppCompatActivity {
                 System.out.println(timeObjectNecessaries.getAid());
 
                 timeList.add(timeObjectNecessaries);
-                new sendTimeObject().execute();
-                System.out.println("updated");
             }
             catch(Exception e){
                 System.out.println("here");
             }
-
         }
-
-
+        new sendTimeObject().execute();
+        System.out.println("updated");
 
     }
 
@@ -71,31 +68,34 @@ public class PushData extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
 
-
             try{
                 URL url = new URL("https://intense-mountain-41887.herokuapp.com/push");
                 httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestProperty("Content-Type","application/json");
                 httpURLConnection.setDoOutput(true);
                 httpURLConnection.setRequestProperty("Accept", "application/json");
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.connect();
 
+                httpURLConnection.connect();
+                System.out.println("line 83: get connect");
                 for(TimeObjectNecessaries timeObjectNecessaries: timeList){
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("aid", timeObjectNecessaries.getAid());
                     jsonObject.put("mid", timeObjectNecessaries.getMid());
+
                     jsonObject.put("pid", timeObjectNecessaries.getPid());
                     jsonObject.put("actual_start", timeObjectNecessaries.getStart());
                     jsonObject.put("actual_end",timeObjectNecessaries.getEnd());
                     String dataToSend = jsonObject.toString();
 
+                    System.out.println("Ready to send data: " + dataToSend);
                     DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
                     wr.writeBytes(dataToSend);
                     wr.flush();
+                    System.out.println("Done");
                 }
+                System.out.println("HttpResponse Code: " + httpURLConnection.getResponseCode());
             } catch (Exception e) {
-                Log.e("in line 232", e.getMessage()+ ": " + e.getLocalizedMessage());
+                Log.e("in line 101", e.getMessage()+ ": " + e.getLocalizedMessage());
             }
             return  null;
         }

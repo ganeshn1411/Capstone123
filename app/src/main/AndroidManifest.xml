@@ -14,8 +14,8 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:icon="@mipmap/forbes"
+        android:label="Data Recorder"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".RegisterActivity" />
@@ -31,7 +31,8 @@
         <activity android:name=".AnalysisActivity" />
         <activity android:name=".MainProfileActivity" />
         <activity android:name=".ActivityDetails" />
-        <activity android:name=".PushData"></activity>
+        <activity android:name=".PushData" />
+        <activity android:name=".ActivityDetails1"></activity>
     </application>
 
 </manifest>

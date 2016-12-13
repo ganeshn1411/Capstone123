@@ -32,10 +32,33 @@
         android:textColor="@color/white"
         android:textAlignment="center" />
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/backButton"
+            android:layout_alignParentLeft="true"
+            android:backgroundTint="@color/white"
+            android:background="@mipmap/back" />
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:id="@+id/frontButton"
+            android:backgroundTint="@color/white"
+            android:background="@mipmap/front" />
+
+    </RelativeLayout>
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="80dp"
         android:layout_height="127dp">
 
         <Button

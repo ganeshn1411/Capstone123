@@ -23,6 +23,8 @@ public class ActivityDetails1 extends AppCompatActivity {
     String currActivityID = "";
     String currActivityName = "";
     String mainActivity = "";
+    String startButtonText = "";
+    String clearButtonText = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +129,7 @@ public class ActivityDetails1 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mainActivity = (String)processText.getText();
-                String startButtonText = (String) startButton.getText();
+                startButtonText = (String) startButton.getText();
                 if (startButtonText.equals("Start")) {
                     System.out.println(currActivityID);
                     System.out.println(currActivityName);
@@ -140,21 +142,54 @@ public class ActivityDetails1 extends AppCompatActivity {
                     progressText.setVisibility(View.VISIBLE);
                     frontButton.setVisibility(View.VISIBLE);
                     backButton.setVisibility(View.VISIBLE);
+                    if(mainActivity.equals("Surgery")){
+                        if(surgeryStack1.size()==1){
+                            backButton.setVisibility(View.INVISIBLE);
+                        }
+                    }
+
+                    Date currentDate = new Date(System.currentTimeMillis());
+                    CharSequence s = DateFormat.format("dd/MM/yyyy hh:mm:ss", currentDate.getTime());
+                    Log.e("current time", s.toString());
+                    ArrayList<String> existingtimes = activityStartTimes.get(currActivityID);
+                    if(existingtimes == null){
+                        ArrayList<String> startTimeList = new ArrayList<String>();
+                        startTimeList.add(s.toString());
+                        activityStartTimes.put(currActivityID,startTimeList);
+                    }
+                    else{
+                        existingtimes.add(s.toString());
+                        activityStartTimes.put(currActivityID,existingtimes);
+                    }
                 }
                 else if (startButtonText.equals("Stop")) {
-                    System.out.println(currActivityID);
-                    System.out.println(currActivityName);
+                    progress = progress + 1;
                     progressBar.setProgress(progress);
                     progressBar.setVisibility(View.VISIBLE);
                     progressText.setText(progress + "/" + total);
                     progressText.setVisibility(View.VISIBLE);
                     frontButton.setVisibility(View.VISIBLE);
                     backButton.setVisibility(View.VISIBLE);
-                    progress = progress + 1;
 
                     if (mainActivity.equals("Pre-Catheterization")) {
+
                     }
                     else if(mainActivity.equals("Surgery")){
+                        Date currentDate = new Date(System.currentTimeMillis());
+                        CharSequence s = DateFormat.format("dd/MM/yyyy hh:mm:ss", currentDate.getTime());
+                        Log.e("current time", s.toString());
+
+                        ArrayList<String> existingtimes = activityEndTimes.get(currActivityID);
+                        if(existingtimes == null){
+                            ArrayList<String> startTimeList = new ArrayList<String>();
+                            startTimeList.add(s.toString());
+                            activityEndTimes.put(currActivityID,startTimeList);
+                        }
+                        else{
+                            existingtimes.add(s.toString());
+                            activityEndTimes.put(currActivityID,existingtimes);
+                        }
+
                         if(surgeryStack.size()==1){
                             progressText.setVisibility(View.INVISIBLE);
                             progressBar.setVisibility(View.INVISIBLE);
@@ -171,7 +206,6 @@ public class ActivityDetails1 extends AppCompatActivity {
 
                             surgeryStack1.push(surgeryStack.peek());
                             surgeryStack.pop();
-
                         }
                         else{
                             surgeryStack.pop();
@@ -186,6 +220,23 @@ public class ActivityDetails1 extends AppCompatActivity {
                         }
                     }
                 }
+                else if(startButtonText.equals("Finish")){
+                    System.out.println("Start Times : " + activityStartTimes);
+                    System.out.println("End Times : " + activityEndTimes);
+                    System.out.println("pid : " + pid);
+
+                    Date currentDate = new Date(System.currentTimeMillis());
+                    CharSequence mid = DateFormat.format("MMddyyyy", currentDate.getTime());
+                    System.out.println("mid : " + mid);
+
+                    Intent intent = new Intent(ActivityDetails1.this, PushData.class);
+                    intent.putExtra("patientId", pid);
+                    intent.putExtra("mid", mid);
+                    intent.putExtra("activityStartTimes", activityStartTimes);
+                    intent.putExtra("activityEndTimes", activityEndTimes);
+                    ActivityDetails1.this.startActivity(intent);
+
+                }
             }
         });
 
@@ -193,7 +244,7 @@ public class ActivityDetails1 extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 mainActivity = (String)processText.getText();
-                String clearButtonText = (String)clearButton.getText();
+                clearButtonText = (String)clearButton.getText();
                 if(clearButtonText.equals("Begin")){
                     processText.setVisibility(View.INVISIBLE);
                     clearButton.setVisibility(View.INVISIBLE);
@@ -260,7 +311,6 @@ public class ActivityDetails1 extends AppCompatActivity {
                             activityName.setVisibility(View.INVISIBLE);
                         }
                         else{
-                            System.out.println("here");
                             String newActivityID = surgeryStack.peek();
                             surgeryStack1.push(newActivityID);
                             currActivityID = newActivityID;
@@ -299,13 +349,21 @@ public class ActivityDetails1 extends AppCompatActivity {
                             currActivityID = newActivityID;
                             currActivityName = activityNameIDMap.get(currActivityID).get(0);
                             activityName.setText(currActivityName);
+                            System.out.println(startButtonText);
+                            if(startButtonText.equals("Start")){
+                                activityName.setText(currActivityName);
+                            }
+                            else if(startButtonText.equals("Stop")){
+                                startButton.setText("Start");
+                                clearButton.setVisibility(View.INVISIBLE);
+                            }
                         }
                     }
                 }
                 else if(clearButtonText.equals("Clear")){
                     clearButton.setVisibility(View.INVISIBLE);
                     startButton.setText("Start");
-                    //activityStartTimes.remove(currActivityID);
+                    activityStartTimes.remove(currActivityID);
                 }
             }
         });
@@ -313,14 +371,318 @@ public class ActivityDetails1 extends AppCompatActivity {
         frontButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println(currActivityID);
+                if(mainActivity.equals("Pre-Catheterization")){
+                    progress = progress + 1;
+                    progressText.setText(progress+"/"+total);
+                    if(preCathProcessStack.size()==1){
+                        progressText.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        frontButton.setVisibility(View.INVISIBLE);
+                        backButton.setVisibility(View.INVISIBLE);
+
+                        processText.setText("Patient Prep");
+                        processText.setVisibility(View.VISIBLE);
+                        activityName.setVisibility(View.INVISIBLE);
+                        startButton.setText("Start");
+                        startButton.setVisibility(View.INVISIBLE);
+                        clearButton.setText("Begin");
+                        clearButton.setVisibility(View.VISIBLE);
+
+                        preCathProcessStack1.push(preCathProcessStack.peek());
+                        preCathProcessStack.pop();
+                    }
+                    else{
+                        preCathProcessStack.pop();
+                        preCathProcessStack1.push(currActivityID);
+                        String newActivityID = preCathProcessStack.peek();
+                        currActivityID = newActivityID;
+                        currActivityName = activityNameIDMap.get(currActivityID).get(0);
+                        activityName.setText(currActivityName);
+
+                        startButton.setText("Start");
+                        clearButton.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else if(mainActivity.equals("Patient Prep")){
+                    progress = progress + 1;
+                    progressText.setText(progress+"/"+total);
+                    if(patientPrepStack.size()==1){
+                        progressText.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        frontButton.setVisibility(View.INVISIBLE);
+                        backButton.setVisibility(View.INVISIBLE);
+
+                        processText.setText("Room Prep");
+                        processText.setVisibility(View.VISIBLE);
+                        activityName.setVisibility(View.INVISIBLE);
+                        startButton.setText("Start");
+                        startButton.setVisibility(View.INVISIBLE);
+                        clearButton.setText("Begin");
+                        clearButton.setVisibility(View.VISIBLE);
+
+                        patientPrepStack1.push(patientPrepStack.peek());
+                        patientPrepStack.pop();
+                    }
+                    else{
+                        patientPrepStack.pop();
+                        patientPrepStack1.push(currActivityID);
+                        String newActivityID = patientPrepStack.peek();
+                        currActivityID = newActivityID;
+                        currActivityName = activityNameIDMap.get(currActivityID).get(0);
+                        activityName.setText(currActivityName);
+
+                        startButton.setText("Start");
+                        clearButton.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else if(mainActivity.equals("Room Prep")){
+                    progress = progress + 1;
+                    progressText.setText(progress+"/"+total);
+                    if(prepRoomStack.size()==1){
+                        progressText.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        frontButton.setVisibility(View.INVISIBLE);
+                        backButton.setVisibility(View.INVISIBLE);
+
+                        processText.setText("Surgery");
+                        processText.setVisibility(View.VISIBLE);
+                        activityName.setVisibility(View.INVISIBLE);
+                        startButton.setText("Start");
+                        startButton.setVisibility(View.INVISIBLE);
+                        clearButton.setText("Begin");
+                        clearButton.setVisibility(View.VISIBLE);
+
+                        prepRoomStack1.push(prepRoomStack.peek());
+                        prepRoomStack.pop();
+                    }
+                    else{
+                        prepRoomStack.pop();
+                        prepRoomStack1.push(currActivityID);
+                        String newActivityID = prepRoomStack.peek();
+                        currActivityID = newActivityID;
+                        currActivityName = activityNameIDMap.get(currActivityID).get(0);
+                        activityName.setText(currActivityName);
+
+                        startButton.setText("Start");
+                        clearButton.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else if(mainActivity.equals("Surgery")){
+                    progress = progress + 1;
+                    progressText.setText(progress+"/"+total);
+                    if(surgeryStack.size()==1){
+                        progressText.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        frontButton.setVisibility(View.INVISIBLE);
+                        backButton.setVisibility(View.INVISIBLE);
+
+                        processText.setText("Post-Catheterization");
+                        processText.setVisibility(View.VISIBLE);
+                        activityName.setVisibility(View.INVISIBLE);
+                        startButton.setText("Start");
+                        startButton.setVisibility(View.INVISIBLE);
+                        clearButton.setText("Begin");
+                        clearButton.setVisibility(View.VISIBLE);
+
+                        surgeryStack1.push(surgeryStack.peek());
+                        surgeryStack.pop();
+                    }
+                    else{
+                        surgeryStack.pop();
+                        surgeryStack1.push(currActivityID);
+                        String newActivityID = surgeryStack.peek();
+                        currActivityID = newActivityID;
+                        currActivityName = activityNameIDMap.get(currActivityID).get(0);
+                        activityName.setText(currActivityName);
+
+                        startButton.setText("Start");
+                        clearButton.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else if(mainActivity.equals("Post-Catheterization")){
+                    progress = progress + 1;
+                    progressText.setText(progress+"/"+total);
+                    if(postCathStack.size()==1){
+                        progressText.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        frontButton.setVisibility(View.INVISIBLE);
+                        backButton.setVisibility(View.INVISIBLE);
+
+                        processText.setText("Post-Surgery Assessment");
+                        processText.setVisibility(View.VISIBLE);
+                        activityName.setVisibility(View.INVISIBLE);
+                        startButton.setText("Start");
+                        startButton.setVisibility(View.INVISIBLE);
+                        clearButton.setText("Begin");
+                        clearButton.setVisibility(View.VISIBLE);
+
+                        postCathStack1.push(postCathStack.peek());
+                        postCathStack.pop();
+                    }
+                    else{
+                        postCathStack.pop();
+                        postCathStack1.push(currActivityID);
+                        String newActivityID = surgeryStack.peek();
+                        currActivityID = newActivityID;
+                        currActivityName = activityNameIDMap.get(currActivityID).get(0);
+                        activityName.setText(currActivityName);
+
+                        startButton.setText("Start");
+                        clearButton.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else if(mainActivity.equals("Post-Surgery Assessment")){
+                    progress = progress + 1;
+                    progressText.setText(progress+"/"+total);
+                    if(postCathAssesmentStack.size()==1){
+                        progressText.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        frontButton.setVisibility(View.INVISIBLE);
+                        backButton.setVisibility(View.INVISIBLE);
+
+                        processText.setText("Post-Surgery Assessment");
+                        processText.setVisibility(View.VISIBLE);
+                        activityName.setVisibility(View.INVISIBLE);
+                        startButton.setText("Start");
+                        startButton.setVisibility(View.INVISIBLE);
+                        clearButton.setText("Begin");
+                        clearButton.setVisibility(View.VISIBLE);
+
+                        postCathAssesmentStack1.push(postCathAssesmentStack.peek());
+                        postCathAssesmentStack.pop();
+                    }
+                    else{
+                        postCathAssesmentStack.pop();
+                        postCathAssesmentStack1.push(currActivityID);
+                        String newActivityID = surgeryStack.peek();
+                        currActivityID = newActivityID;
+                        currActivityName = activityNameIDMap.get(currActivityID).get(0);
+                        activityName.setText(currActivityName);
+
+                        startButton.setText("Start");
+                        clearButton.setVisibility(View.INVISIBLE);
+                    }
+                }
             }
         });
 
         backButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                System.out.println(currActivityID);
+                if(mainActivity.equals("Pre-Catheterization")){
+                    String previousActivity = preCathProcessStack1.peek();
+                    currActivityID = previousActivity;
+                    currActivityName = activityNameIDMap.get(currActivityID).get(0);
+                    preCathProcessStack.push(previousActivity);
+                    preCathProcessStack1.pop();
+                    activityName.setText(currActivityName);
+                    progress = progress -  1;
+                    progressText.setText(progress+"/"+total);
+                    System.out.println(startButtonText);
+                    String currStartButton = (String)startButton.getText();
+                    if(currStartButton.equals("Stop")){
+                        clearButton.setVisibility(View.INVISIBLE);
+                        startButton.setText("Start");
+                    }
+                    if(preCathProcessStack1.size()==1){
+                        backButton.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else if(mainActivity.equals("Patient Prep")){
+                    String previousActivity = patientPrepStack1.peek();
+                    currActivityID = previousActivity;
+                    currActivityName = activityNameIDMap.get(currActivityID).get(0);
+                    patientPrepStack.push(previousActivity);
+                    patientPrepStack1.pop();
+                    activityName.setText(currActivityName);
+                    progress = progress -  1;
+                    progressText.setText(progress+"/"+total);
+                    System.out.println(startButtonText);
+                    String currStartButton = (String)startButton.getText();
+                    if(currStartButton.equals("Stop")){
+                        clearButton.setVisibility(View.INVISIBLE);
+                        startButton.setText("Start");
+                    }
+                    if(patientPrepStack1.size()==1){
+                        backButton.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else if(mainActivity.equals("Room Prep")){
+                    String previousActivity = prepRoomStack1.peek();
+                    currActivityID = previousActivity;
+                    currActivityName = activityNameIDMap.get(currActivityID).get(0);
+                    prepRoomStack.push(previousActivity);
+                    prepRoomStack1.pop();
+                    activityName.setText(currActivityName);
+                    progress = progress -  1;
+                    progressText.setText(progress+"/"+total);
+                    System.out.println(startButtonText);
+                    String currStartButton = (String)startButton.getText();
+                    if(currStartButton.equals("Stop")){
+                        clearButton.setVisibility(View.INVISIBLE);
+                        startButton.setText("Start");
+                    }
+                    if(prepRoomStack1.size()==1){
+                        backButton.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else if(mainActivity.equals("Surgery")){
+                    String previousActivity = surgeryStack1.peek();
+                    currActivityID = previousActivity;
+                    currActivityName = activityNameIDMap.get(currActivityID).get(0);
+                    surgeryStack.push(previousActivity);
+                    surgeryStack1.pop();
+                    activityName.setText(currActivityName);
+                    progress = progress -  1;
+                    progressText.setText(progress+"/"+total);
+                    System.out.println(startButtonText);
+                    String currStartButton = (String)startButton.getText();
+                    if(currStartButton.equals("Stop")){
+                        clearButton.setVisibility(View.INVISIBLE);
+                        startButton.setText("Start");
+                    }
+                    if(surgeryStack1.size()==1){
+                        backButton.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else if(mainActivity.equals("Post-Catheterization")){
+                    String previousActivity = postCathStack1.peek();
+                    currActivityID = previousActivity;
+                    currActivityName = activityNameIDMap.get(currActivityID).get(0);
+                    postCathStack.push(previousActivity);
+                    postCathStack1.pop();
+                    activityName.setText(currActivityName);
+                    progress = progress -  1;
+                    progressText.setText(progress+"/"+total);
+                    System.out.println(startButtonText);
+                    String currStartButton = (String)startButton.getText();
+                    if(currStartButton.equals("Stop")){
+                        clearButton.setVisibility(View.INVISIBLE);
+                        startButton.setText("Start");
+                    }
+                    if(postCathStack1.size()==1){
+                        backButton.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else if(mainActivity.equals("Post-Surgery Assessment")){
+                    String previousActivity = postCathAssesmentStack1.peek();
+                    currActivityID = previousActivity;
+                    currActivityName = activityNameIDMap.get(currActivityID).get(0);
+                    postCathAssesmentStack.push(previousActivity);
+                    postCathAssesmentStack1.pop();
+                    activityName.setText(currActivityName);
+                    progress = progress -  1;
+                    progressText.setText(progress+"/"+total);
+                    System.out.println(startButtonText);
+                    String currStartButton = (String)startButton.getText();
+                    if(currStartButton.equals("Stop")){
+                        clearButton.setVisibility(View.INVISIBLE);
+                        startButton.setText("Start");
+                    }
+                    if(postCathAssesmentStack1.size()==1){
+                        backButton.setVisibility(View.INVISIBLE);
+                    }
+                }
             }
         });
     }

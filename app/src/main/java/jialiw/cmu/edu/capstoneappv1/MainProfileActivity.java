@@ -85,7 +85,7 @@ public class MainProfileActivity extends AppCompatActivity {
                             }
                         }
                         patientActivityMap.remove(key);
-                        Intent intent = new Intent(MainProfileActivity.this, ActivityDetails.class);
+                        Intent intent = new Intent(MainProfileActivity.this, ActivityDetails1.class);
                         intent.putExtra("patientId", key);
                         intent.putExtra("activityDetails",activityDetails);
                         intent.putExtra("paMap",patientActivityMapCopy);
@@ -301,6 +301,16 @@ public class MainProfileActivity extends AppCompatActivity {
             String ID = splitActivityID[2];
             System.out.println("Id" + ID);
             String[] splitActivityName = tem.substring(activityNameIndex,tem.length()).split("\"");
+            System.out.println(tem.substring(activityNameIndex,tem.length()));
+            System.out.println(activityNameIndex);
+            //System.out.println(splitActivityName);
+            //for(int i=0;i<splitActivityName.length;i++){
+            //    System.out.println(splitActivityName[i]);
+            //}
+            //System.out.println(splitActivityName[0]);
+            //System.out.println(splitActivityName[1]);
+            //System.out.println(splitActivityName[2]);
+
             String name = splitActivityName[2];
             System.out.println("name " + name);
             String[] splitActivityCategory = tem.substring(categoryIndex,tem.length()).split("\"");

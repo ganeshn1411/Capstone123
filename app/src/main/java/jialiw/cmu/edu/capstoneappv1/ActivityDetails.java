@@ -24,11 +24,13 @@ import java.util.Stack;
 public class ActivityDetails extends AppCompatActivity {
     int total = 0;
     int progress = 1;
+    String currActivityID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
+
         Intent intent = getIntent();
         final HashMap<String, ArrayList<String>> activityNameIDMap = (HashMap<String, ArrayList<String>>) intent.getSerializableExtra("activityDetails");
         System.out.println(activityNameIDMap);
@@ -110,7 +112,11 @@ public class ActivityDetails extends AppCompatActivity {
         final Button startButton = (Button)findViewById(R.id.startButton);
         startButton.setVisibility(View.INVISIBLE);
 
-        System.out.println("grev " + activityNameIDMap);
+        final Button frontButton = (Button)findViewById(R.id.frontButton);
+        frontButton.setVisibility(View.INVISIBLE);
+
+        final Button backButton = (Button)findViewById(R.id.backButton);
+        backButton.setVisibility(View.INVISIBLE);
 
         startButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -125,8 +131,11 @@ public class ActivityDetails extends AppCompatActivity {
                     progressBar.setVisibility(View.VISIBLE);
                     progressText.setText(progress+"/"+total);
                     progressText.setVisibility(View.VISIBLE);
+                    frontButton.setVisibility(View.VISIBLE);
+                    backButton.setVisibility(View.VISIBLE);
 
                     String activityID = (String)activityName.getText();
+                    currActivityID = activityID;
                     if(activityNameIDMap.containsKey(activityID)) {
                         String activityVal = activityNameIDMap.get(activityID).get(0);
                         activityName.setText(activityVal);
@@ -163,6 +172,8 @@ public class ActivityDetails extends AppCompatActivity {
                     progressBar.setVisibility(View.VISIBLE);
                     progressText.setText(progress+"/"+total);
                     progressText.setVisibility(View.VISIBLE);
+                    frontButton.setVisibility(View.VISIBLE);
+                    backButton.setVisibility(View.VISIBLE);
                     progress = progress + 1;
 
                     if(mainActivity.equals("Pre-Catheterization")){
@@ -176,6 +187,9 @@ public class ActivityDetails extends AppCompatActivity {
                             }
                             progressText.setVisibility(View.INVISIBLE);
                             progressBar.setVisibility(View.INVISIBLE);
+
+                            frontButton.setVisibility(View.INVISIBLE);
+                            backButton.setVisibility(View.INVISIBLE);
 
                             System.out.println(activityID);
 
@@ -245,7 +259,6 @@ public class ActivityDetails extends AppCompatActivity {
                             clearButton.setVisibility(View.INVISIBLE);
 
 
-
                         }
                     }
                     else if(mainActivity.equals("Patient Prep")){
@@ -259,6 +272,10 @@ public class ActivityDetails extends AppCompatActivity {
 
                             progressText.setVisibility(View.INVISIBLE);
                             progressBar.setVisibility(View.INVISIBLE);
+
+
+                            frontButton.setVisibility(View.INVISIBLE);
+                            backButton.setVisibility(View.INVISIBLE);
 
 
                             System.out.println(activityID);
@@ -333,6 +350,10 @@ public class ActivityDetails extends AppCompatActivity {
                             progressText.setVisibility(View.INVISIBLE);
                             progressBar.setVisibility(View.INVISIBLE);
 
+
+                            frontButton.setVisibility(View.INVISIBLE);
+                            backButton.setVisibility(View.INVISIBLE);
+
                             System.out.println(activityID);
 
                             Date currentDate = new Date(System.currentTimeMillis());
@@ -393,27 +414,34 @@ public class ActivityDetails extends AppCompatActivity {
                     }
                     else if(mainActivity.equals("Surgery")){
                         if(surgeryStack.size()==1){
+                            String IDnew = "";
+
                             activityName.setText(surgeryStack.peek());
                             String activityID = (String)activityName.getText();
                             if(activityNameIDMap.containsKey(activityID)) {
                                 String activityVal = activityNameIDMap.get(activityID).get(0);
                                 activityName.setText(activityVal);
+                                IDnew = activityID;
+                            }
+                            else{
+                                System.out.println(activityID);
+                                Set<String> activityIDKeys = activityNameIDMap.keySet();
+                                Iterator activityIDKeysiterator = activityIDKeys.iterator();
+                                while(activityIDKeysiterator.hasNext()){
+                                    String currID = (String)activityIDKeysiterator.next();
+                                    String currName = activityNameIDMap.get(currID).get(0);
+                                    currName = currName.replaceAll("[^a-zA-Z0-9,-]", "");
+                                    if(currName.equals(activityID)){
+                                        IDnew = currID;
+                                    }
+                                }
                             }
 
                             progressText.setVisibility(View.INVISIBLE);
                             progressBar.setVisibility(View.INVISIBLE);
 
-                            String IDnew = "";
-
-                            Set<String> activityIDKeys = activityNameIDMap.keySet();
-                            Iterator activityIDKeysiterator = activityIDKeys.iterator();
-                            while(activityIDKeysiterator.hasNext()){
-                                String currID = (String)activityIDKeysiterator.next();
-                                String currName = activityNameIDMap.get(currID).get(0);
-                                if(currName.equals(activityID)){
-                                    IDnew = currID;
-                                }
-                            }
+                            frontButton.setVisibility(View.INVISIBLE);
+                            backButton.setVisibility(View.INVISIBLE);
 
                             Date currentDate = new Date(System.currentTimeMillis());
                             CharSequence s = DateFormat.format("dd/MM/yyyy hh:mm:ss", currentDate.getTime());
@@ -496,6 +524,10 @@ public class ActivityDetails extends AppCompatActivity {
                             progressText.setVisibility(View.INVISIBLE);
                             progressBar.setVisibility(View.INVISIBLE);
 
+
+                            frontButton.setVisibility(View.INVISIBLE);
+                            backButton.setVisibility(View.INVISIBLE);
+
                             String IDnew = "";
 
                             Set<String> activityIDKeys = activityNameIDMap.keySet();
@@ -537,7 +569,6 @@ public class ActivityDetails extends AppCompatActivity {
                         else{
 
                             String activityID = (String)activityName.getText();
-
                             String IDnew = "";
 
                             Set<String> activityIDKeys = activityNameIDMap.keySet();
@@ -587,6 +618,10 @@ public class ActivityDetails extends AppCompatActivity {
                             }
 
                             progressText.setVisibility(View.INVISIBLE);
+                            progressBar.setVisibility(View.INVISIBLE);
+
+                            frontButton.setVisibility(View.INVISIBLE);
+                            backButton.setVisibility(View.INVISIBLE);
 
                             String IDnew = "";
 
@@ -672,7 +707,7 @@ public class ActivityDetails extends AppCompatActivity {
                     System.out.println("pid : " + pid);
 
                     Date currentDate = new Date(System.currentTimeMillis());
-                    CharSequence mid = DateFormat.format("ddMMyyyy", currentDate.getTime());
+                    CharSequence mid = DateFormat.format("MMddyyyy", currentDate.getTime());
                     System.out.println("mid : " + mid);
 
 
