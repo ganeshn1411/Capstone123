@@ -1,4 +1,4 @@
-package jialiw.cmu.edu.capstoneappv1;
+package gnagendr.cmu.edu.automatic_data_recorder;
 
 import org.junit.Test;
 

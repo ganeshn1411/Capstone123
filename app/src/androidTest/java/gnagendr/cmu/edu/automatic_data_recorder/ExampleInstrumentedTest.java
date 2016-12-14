@@ -1,4 +1,4 @@
-package jialiw.cmu.edu.capstoneappv1;
+package gnagendr.cmu.edu.automatic_data_recorder;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("jialiw.cmu.edu.capstoneappv1", appContext.getPackageName());
+        assertEquals("gnagendr.cmu.edu.automatic_data_recorder", appContext.getPackageName());
     }
 }
