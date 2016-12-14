@@ -37,17 +37,19 @@ public class recordTime extends AppCompatActivity {
         final HashMap<String, ArrayList<String>> activityDetails = (HashMap<String, ArrayList<String>>) intent.getSerializableExtra("activityDetails");
         final HashMap<String,ArrayList<String>> activityStartTimes = new HashMap<>();
         final HashMap<String,ArrayList<String>> activityEndTimes = new HashMap<>();
+        System.out.println(patientActivityMap);
+
         Log.v("map size", patientActivityMap.size()+"");
-        final String pid = intent.getStringExtra("patientId").trim()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ;
+        final String pid = intent.getStringExtra("patientId").trim();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ;
         Log.d("pid is =====", pid);
         Stack<String> activityStack = new Stack<>();
-        String key = "";
-        Set<String> keys = patientActivityMap.keySet();
-        Iterator iterator = keys.iterator();
-        while(iterator.hasNext()){
-            key = (String)iterator.next();
-        }
-        Iterator listIterator = patientActivityMap.get(key).iterator();
+        //String key = "";
+        //Set<String> keys = patientActivityMap.keySet();
+        //Iterator iterator = keys.iterator();
+        //while(iterator.hasNext()){
+        //    key = (String)iterator.next();
+        //}
+        Iterator listIterator = patientActivityMap.get(pid.trim()).iterator();
 
         while(listIterator.hasNext()){
             String val = (String)listIterator.next();
@@ -74,25 +76,34 @@ public class recordTime extends AppCompatActivity {
             String activityID = activityStack.peek();
             activityStack.pop();
             String activityCategory = activityNameIDMap.get(activityID).get(1);
-            if(activityCategory.equals("Pre-Catheterization")){
+            System.out.print(activityCategory);
+            if(activityCategory.equalsIgnoreCase("Pre-Catheterization")){
                 preCathProcessStack.push(activityID);
             }
-            else if(activityCategory.equals("Post-Catheterization")){
+            else if(activityCategory.equalsIgnoreCase("Post-Catheterization")){
                 postCathStack.push(activityID);
             }
-            else if(activityCategory.equals("Room Prep")){
+            else if(activityCategory.equalsIgnoreCase("Room Prep")){
                 prepRoomStack.push(activityID);
             }
-            else if(activityCategory.equals("Surgery")){
+            else if(activityCategory.equalsIgnoreCase("surgery")){
                 surgeryStack.push(activityID);
             }
-            else if(activityCategory.equals("Patient Prep")){
+            else if(activityCategory.equalsIgnoreCase("Patient Prep")){
                 patientPrepStack.push(activityID);
             }
-            else if(activityCategory.equals("Post-Surgery Assessment")){
+            else if(activityCategory.equalsIgnoreCase("Post-Surgery Assessment")){
                 postCathAssesmentStack.push(activityID);
             }
         }
+
+        System.out.println(preCathProcessStack);
+        System.out.println(patientPrepStack);
+        System.out.println(prepRoomStack);
+        System.out.println(surgeryStack);
+        System.out.println(postCathStack);
+        System.out.println(postCathAssesmentStack);
+
 
         final TextView activityName = (TextView) findViewById(R.id.activity_Name);
         activityName.setVisibility(View.INVISIBLE);
@@ -139,8 +150,33 @@ public class recordTime extends AppCompatActivity {
                     progressText.setVisibility(View.VISIBLE);
                     frontButton.setVisibility(View.VISIBLE);
                     backButton.setVisibility(View.VISIBLE);
-                    if(mainActivity.equals("Surgery")){
+                    if(mainActivity.equals("Pre-Catheterization")){
+                        if(preCathProcessStack1.size()==1){
+                            backButton.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                    else if(mainActivity.equals("Patient Prep")){
+                        if(patientPrepStack1.size()==1){
+                            backButton.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                    else if(mainActivity.equals("Room Prep")){
+                        if(prepRoomStack1.size()==1){
+                            backButton.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                    else if(mainActivity.equals("Surgery")){
                         if(surgeryStack1.size()==1){
+                            backButton.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                    else if(mainActivity.equals("Post-Catheterization")){
+                        if(postCathStack1.size()==1){
+                            backButton.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                    else if(mainActivity.equals("Post-Surgery Assessment")){
+                        if(postCathAssesmentStack1.size()==1){
                             backButton.setVisibility(View.INVISIBLE);
                         }
                     }
@@ -303,7 +339,9 @@ public class recordTime extends AppCompatActivity {
                             clearButton.setVisibility(View.INVISIBLE);
                         }
                     }
-                    else if(mainActivity.equals("Surgery")){
+                    else if(mainActivity.equalsIgnoreCase("Surgery")){
+                        System.out.println(surgeryStack.size());
+                        System.out.println(surgeryStack);
                         Date currentDate = new Date(System.currentTimeMillis());
                         CharSequence s = DateFormat.format("dd/MM/yyyy hh:mm:ss", currentDate.getTime());
                         Log.e("current time", s.toString());
@@ -348,7 +386,7 @@ public class recordTime extends AppCompatActivity {
                             clearButton.setVisibility(View.INVISIBLE);
                         }
                     }
-                    else if(mainActivity.equals("Post-Surgery Assessment")){
+                    else if(mainActivity.equals("Post-Catheterization")){
                         Date currentDate = new Date(System.currentTimeMillis());
                         CharSequence s = DateFormat.format("dd/MM/yyyy hh:mm:ss", currentDate.getTime());
                         Log.e("current time", s.toString());
@@ -370,7 +408,7 @@ public class recordTime extends AppCompatActivity {
                             frontButton.setVisibility(View.INVISIBLE);
                             backButton.setVisibility(View.INVISIBLE);
 
-                            processText.setText("Post-Catheterization");
+                            processText.setText("Post-Surgery Assessment");
                             processText.setVisibility(View.VISIBLE);
                             activityName.setVisibility(View.INVISIBLE);
                             startButton.setText("Start");
@@ -415,13 +453,11 @@ public class recordTime extends AppCompatActivity {
                                 frontButton.setVisibility(View.INVISIBLE);
                                 backButton.setVisibility(View.INVISIBLE);
 
-                                processText.setText("Post-Catheterization");
-                                processText.setVisibility(View.VISIBLE);
+                                processText.setVisibility(View.INVISIBLE);
+                                startButton.setText("Finish");
+                                clearButton.setVisibility(View.INVISIBLE);
+                                startButton.setVisibility(View.VISIBLE);
                                 activityName.setVisibility(View.INVISIBLE);
-                                startButton.setText("Start");
-                                startButton.setVisibility(View.INVISIBLE);
-                                clearButton.setText("Begin");
-                                clearButton.setVisibility(View.VISIBLE);
 
                                 postCathAssesmentStack1.push(postCathAssesmentStack.peek());
                                 postCathAssesmentStack.pop();
@@ -521,7 +557,7 @@ public class recordTime extends AppCompatActivity {
                             activityName.setText(currActivityName);
                         }
                     }
-                    else if(mainActivity.equals("Surgery")){
+                    else if(mainActivity.equalsIgnoreCase("Surgery")){
                         if(surgeryStack.isEmpty()) {
                             processText.setText("Post-Catheterization");
                             processText.setVisibility(View.VISIBLE);
@@ -690,7 +726,7 @@ public class recordTime extends AppCompatActivity {
                         clearButton.setVisibility(View.INVISIBLE);
                     }
                 }
-                else if(mainActivity.equals("Surgery")){
+                else if(mainActivity.equalsIgnoreCase("Surgery")){
                     progress = progress + 1;
                     progressBar.setProgress(progress);
                     progressText.setText(progress+"/"+total);
@@ -855,7 +891,7 @@ public class recordTime extends AppCompatActivity {
                         backButton.setVisibility(View.INVISIBLE);
                     }
                 }
-                else if(mainActivity.equals("Surgery")){
+                else if(mainActivity.equalsIgnoreCase("Surgery")){
                     String previousActivity = surgeryStack1.peek();
                     currActivityID = previousActivity;
                     currActivityName = activityNameIDMap.get(currActivityID).get(0);

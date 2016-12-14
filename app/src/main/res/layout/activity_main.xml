@@ -13,7 +13,7 @@
     tools:context="gnagendr.cmu.edu.automatic_data_recorder.MainActivity">
 
     <TextView
-        android:text="Welcome to Automatic Data Recorder"
+        android:text="Welcome to Smart Tap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
